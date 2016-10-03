@@ -28,24 +28,24 @@ static double diff_in_second(struct timespec t1, struct timespec t2)
 
 int main(int argc, char *argv[])
 {
-#ifndef OPT
-    FILE *fp;
-    int i = 0;
-    char line[MAX_LAST_NAME_SIZE];
-#else
-    struct timespec mid;
-#endif
     struct timespec start, end;
     double cpu_time1, cpu_time2;
 
 #ifndef OPT
+    FILE *fp;
+    int i = 0;
+    char line[MAX_LAST_NAME_SIZE];
+
     /* check file opening */
     fp = fopen(DICT_FILE, "r");
     if (!fp) {
         printf("cannot open the file\n");
         return -1;
     }
+
 #else
+    struct timespec mid;
+
 
 #include "file.c"
 #include "debug.h"
@@ -54,8 +54,8 @@ int main(int argc, char *argv[])
     file_align(DICT_FILE, ALIGN_FILE, MAX_LAST_NAME_SIZE);
     int fd = open(ALIGN_FILE, O_RDONLY | O_NONBLOCK);
     off_t fs = fsize( ALIGN_FILE);
-#endif
 
+#endif
     /* build the entry */
     entry *pHead, *e;
     pHead = (entry *) malloc(sizeof(entry));
@@ -130,13 +130,9 @@ int main(int argc, char *argv[])
     clock_gettime(CLOCK_REALTIME, &end);
     cpu_time1 = diff_in_second(start, end);
 
-#endif
-
-#ifndef OPT
     /* close file as soon as possible */
     fclose(fp);
 #endif
-
     e = pHead;
 
     /* the givn last name to find */
